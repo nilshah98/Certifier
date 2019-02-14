@@ -1,0 +1,23 @@
+{
+  "name": "certifier",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nurdtechie98/Certifier.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nurdtechie98/Certifier/issues"
+  },
+  "homepage": "https://github.com/nurdtechie98/Certifier#readme",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "nodemailer": "^5.1.1"
+  }
+}
