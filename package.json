@@ -17,7 +17,10 @@
   },
   "homepage": "https://github.com/nurdtechie98/Certifier#readme",
   "dependencies": {
+    "bip39": "^2.5.0",
+    "eccrypto": "^1.1.0",
     "ejs": "^2.6.1",
+    "ethereumjs-wallet": "^0.6.3",
     "nodemailer": "^5.1.1"
   }
 }
