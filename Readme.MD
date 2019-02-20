@@ -6,6 +6,6 @@ To Do:
 - [ ] Smart Contract
 - [ ] IPFS
 - [x] Encryter
-- [ ] Mailer
+- [x] Mailer
 - [ ] Integration
 
