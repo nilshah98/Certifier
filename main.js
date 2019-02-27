@@ -47,12 +47,31 @@ window.onload = async () => {
         }
     ];
     
-    var address = '0x301b3a536223b111acb79c7f05844725d2fe0cda';
+    var address = '0xfa56ef65a3f624ada359e19d4d1800a932399b57';
     accounts = await web3.eth.getAccounts();
     contract = new web3.eth.Contract(abi,address);
     console.log(contract);
 
     abi2 = [
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "name": "id_to_address",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
         {
             "constant": true,
             "inputs": [],
@@ -61,6 +80,25 @@ window.onload = async () => {
                 {
                     "name": "",
                     "type": "address"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "name": "id_to_ipfshash",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "bytes32"
                 }
             ],
             "payable": false,
@@ -82,22 +120,21 @@ window.onload = async () => {
             "type": "function"
         },
         {
-            "constant": true,
+            "constant": false,
             "inputs": [
                 {
-                    "name": "_serial_id",
-                    "type": "uint256"
-                }
-            ],
-            "name": "get_ipfs_hash",
-            "outputs": [
+                    "name": "_id_to_ipfshash",
+                    "type": "bytes32[]"
+                },
                 {
-                    "name": "",
-                    "type": "string"
+                    "name": "_id_to_address",
+                    "type": "address[]"
                 }
             ],
+            "name": "addcertificate",
+            "outputs": [],
             "payable": false,
-            "stateMutability": "view",
+            "stateMutability": "nonpayable",
             "type": "function"
         },
         {
@@ -112,20 +149,6 @@ window.onload = async () => {
             ],
             "payable": false,
             "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "name": "_ipfs_hash",
-                    "type": "string"
-                }
-            ],
-            "name": "addcertificate",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
             "type": "function"
         },
         {
@@ -164,11 +187,18 @@ var issue = async () => {
 
     console.log(newcontract);
 
-    // 5 entries in CSV
-    for(var i=0;i<5;i++){
-        // generate ipfshash
-        await addcertificate("123456789");    
-    }
+    //  5 entries in CSV
+    // for(var i=0;i<5;i++){
+    //     generate ipfshash
+    //     await addcertificate("123456789");    
+    // }
+
+    // Convert csv into 2 arrays
+    var arr1 = [web3.utils.fromAscii("abcdefgh"),web3.utils.fromAscii("xyzwerqw")];
+    var arr2 = ["0xfa17349ef48e20b98539b54C769d2c0DE7e65880","0xfa17349ef48e20b98539b54C769d2c0DE7e65880"];
+    
+    await addcertificate(arr1, arr2);
+
 };
 
 var get_contract_address = async (series_name) => {
@@ -182,8 +212,8 @@ var get_contract_address = async (series_name) => {
     //console.log(series_address);
 }
 
-var addcertificate = async (ipsh_hash) => {
-    await newcontract.methods.addcertificate(ipsh_hash).send(
+var addcertificate = async (arr1, arr2) => {
+    await newcontract.methods.addcertificate(arr1, arr2).send(
         {
             from: accounts[0],
             gas: '4700000'
@@ -191,12 +221,14 @@ var addcertificate = async (ipsh_hash) => {
     )
 }
 
-var get_ipfs_hash = async (serial_id) => {
-    var ipfs_hash = await newcontract.methods.get_ipfs_hash(serial_id).call(
-        {
-            from: accounts[0],
-            gas: '4700000'
-        }
-    )
-    return ipfs_hash;
-}
+
+
+// var get_ipfs_hash = async (serial_id) => {
+//     var ipfs_hash = await newcontract.methods.get_ipfs_hash(serial_id).call(
+//         {
+//             from: accounts[0],
+//             gas: '4700000'
+//         }
+//     )
+//     return ipfs_hash;
+// }
