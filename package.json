@@ -20,9 +20,6 @@
     "bip39": "^2.5.0",
     "eccrypto": "^1.1.0",
     "ejs": "^2.6.1",
-    "ethereumjs-wallet": "^0.6.3",
-    "ganache-cli": "^6.3.0",
-    "nodemailer": "^5.1.1",
-    "web3": "^1.0.0-beta.46"
+    "nodemailer": "^5.1.1"
   }
 }
