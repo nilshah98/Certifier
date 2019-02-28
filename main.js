@@ -172,7 +172,8 @@ window.onload = async () => {
 // csv will be given + template. 
 // First make a contract instance for series. 
 // Series name randomly generated.
-var issue = async () => {
+
+var addcontract = async (arr1, arr2) => {
     var series_name = "abcd";  //random generation
     await contract.methods.issue(series_name).send(
         {
@@ -194,8 +195,8 @@ var issue = async () => {
     // }
 
     // Convert csv into 2 arrays
-    var arr1 = [web3.utils.fromAscii("abcdefgh"),web3.utils.fromAscii("xyzwerqw")];
-    var arr2 = ["0xfa17349ef48e20b98539b54C769d2c0DE7e65880","0xfa17349ef48e20b98539b54C769d2c0DE7e65880"];
+    //var arr1 = [web3.utils.fromAscii("abcdefgh"),web3.utils.fromAscii("xyzwerqw")];
+    //var arr2 = ["0xfa17349ef48e20b98539b54C769d2c0DE7e65880","0xfa17349ef48e20b98539b54C769d2c0DE7e65880"];
     
     await addcertificate(arr1, arr2);
 
