@@ -221,15 +221,3 @@ var addcertificate = async (arr1, arr2) => {
         }
     )
 }
-
-
-
-// var get_ipfs_hash = async (serial_id) => {
-//     var ipfs_hash = await newcontract.methods.get_ipfs_hash(serial_id).call(
-//         {
-//             from: accounts[0],
-//             gas: '4700000'
-//         }
-//     )
-//     return ipfs_hash;
-// }
