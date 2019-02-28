@@ -217,6 +217,14 @@ function draw(content) {
 		// create new Image object with the above url
 		var img = new Image();
 		img.src = dataURL;
+
+		var x = new FileReader();
+		x.readAsArrayBuffer(dataURItoBlob(dataURL));
+		x.onload = function(data){
+			console.log(data.target.result.toString());
+		};
+
+
 		img.classList.add("image-view");
 		// img.onload = function() {
 		// 	// set imageView (image container) width and height, same as image
@@ -250,3 +258,29 @@ function dragEnd(event){
 	uploadBox.classList.remove("drag-over");
 	// uploadBox.classList.add("box");
 }
+
+function dataURItoBlob(dataURI) {
+	// convert base64 to raw binary data held in a string
+	// doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+	var byteString = atob(dataURI.split(',')[1]);
+  
+	// separate out the mime component
+	var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
+  
+	// write the bytes of the string to an ArrayBuffer
+	var ab = new ArrayBuffer(byteString.length);
+  
+	// create a view into the buffer
+	var ia = new Uint8Array(ab);
+  
+	// set the bytes of the buffer to the correct values
+	for (var i = 0; i < byteString.length; i++) {
+		ia[i] = byteString.charCodeAt(i);
+	}
+  
+	// write the ArrayBuffer to a blob, and you're done
+	var blob = new Blob([ab], {type: mimeString});
+	return blob;
+  
+  }
+  
