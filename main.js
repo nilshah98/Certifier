@@ -399,7 +399,11 @@ var id_to_hash = async(serial_id) => {
             gas: '4700000'
         }
     );
-    return web3.utils.toAscii(ipfshash1) + web3.utils.toAscii(ipfshash2);
+    ipfshash1.replace("\00\g","");
+    ipfshash2.replace("\00\g","");
+    ipfshash1 = web3.utils.toAscii(ipfshash1);
+    ipfshash2 = web3.utils.toAscii(ipfshash2);
+    return ipfshash1 + ipfshash2;
 };
 
 var add_certificate_to_dashboard = async(unique_id) => {
@@ -457,7 +461,7 @@ var change_access = (index,val) => {
     var personal_ipfs = upload_intermediate(current);
     new_contract(current[index][1]);
     var hash1 = web3.utils.fromAscii(ipfs_hash.slice(0,32));
-    var hash1 = web3.utils.fromAscii(ipfs_hash.slice(32));
+    var hash2 = web3.utils.fromAscii(ipfs_hash.slice(32));
     await update_ipfs_hash(current[index][2], hash1, hash2);
 }
 
@@ -471,7 +475,7 @@ var add_access = (index,val) => {
     var personal_ipfs = upload_intermediate(current);
     new_contract(current[index][1]);
     var hash1 = web3.utils.fromAscii(ipfs_hash.slice(0,32));
-    var hash1 = web3.utils.fromAscii(ipfs_hash.slice(32));
+    var hash2 = web3.utils.fromAscii(ipfs_hash.slice(32));
     await update_ipfs_hash(current[index][2], hash1, hash2);
 }
 

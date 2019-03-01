@@ -52,11 +52,13 @@ var issue = async (files,owners,description) => {
             access:[]
         }
         var intermediate_hash = await upload_intermediate(intermediate);
-        intermediate_hash = web3.utils.fromAscii(intermediate_hash);
-        hashes.push[intermediate_hash];
+        var hash1 = web3.utils.fromAscii(intermediate_hash.slice(0,32));
+        var hash2 = web3.utils.fromAscii(intermediate_hash.slice(32));
+        hashes.push[hash1];
+        hashes.push[hash2];
     }
     await addcontact(hashes,owners);
 }
 
-issue(['nurdtechie98.png','test.png'],["0x9ef08d23bd291c2f2c27654ba02d05a1386cc185","0x9ef08d23bd291c2f2c27654ba02d05a1386cc185"],["shivam cheetah","neel hero"]);
+//issue(['nurdtechie98.png','test.png'],["0x9ef08d23bd291c2f2c27654ba02d05a1386cc185","0x9ef08d23bd291c2f2c27654ba02d05a1386cc185"],["shivam cheetah","neel hero"]);
 
