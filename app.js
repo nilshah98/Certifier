@@ -1,5 +1,4 @@
 const ipfsAPI = require('ipfs-http-client');
-const fs = require('fs');
 //Connceting to the ipfs network via infura gateway
 const ipfs = ipfsAPI({host: 'localhost', port: '5001', protocol: 'http'})
 
