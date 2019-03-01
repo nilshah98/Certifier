@@ -84,7 +84,7 @@ window.onload = async () => {
         }
     ];
     
-    var address = '0xfa56ef65a3f624ada359e19d4d1800a932399b57';
+    var address = '0x8ed06c435832d52a7e0e39f7f24640c3a7d12ee2';
     accounts = await web3.eth.getAccounts();
     contract = new web3.eth.Contract(abi,address);
     console.log(contract);
@@ -266,17 +266,20 @@ window.onload = async () => {
     ];
 }
 
-// csv will be given + template. 
-// First make a contract instance for series. 
-// Series name randomly generated.
-
+// getting new contract generated for every series.
 var new_contract = (series_address) => {
     newcontract = new web3.eth.Contract(abi2,series_address);
 }
 
+// Add group of certificates i.e a series of certificates.
 var addcontract = async (arr1, arr2) => {
-    //var series_name = "abcd";  //random generation
     await contract.methods.issue().send(
+        {
+            from: accounts[0],
+            gas: '4700000'
+        }
+    )
+    var series_name = await contract.methdods.series_name().call(
         {
             from: accounts[0],
             gas: '4700000'
@@ -294,10 +297,10 @@ var addcontract = async (arr1, arr2) => {
     //var arr1 = [web3.utils.fromAscii("abcdefgh"),web3.utils.fromAscii("xyzwerqw")];
     //var arr2 = ["0xfa17349ef48e20b98539b54C769d2c0DE7e65880","0xfa17349ef48e20b98539b54C769d2c0DE7e65880"];
     new_contract(series_address);
-    await addcertificate(arr1, arr2);
-
+    await addcertificates(arr1, arr2);
 };
 
+// returns contract address corresponding to series.
 var get_contract_address = async (series_name) => {
     var series_address = await contract.methods.get_contract_address(series_name).call(
         {
@@ -309,8 +312,9 @@ var get_contract_address = async (series_name) => {
     //console.log(series_address);
 }
 
-var addcertificate = async (arr1, arr2) => {
-    await newcontract.methods.addcertificate(arr1, arr2).send(
+// give both arrays of ipfs hashes and public address of students.
+var addcertificates = async (arr1, arr2) => {
+    await newcontract.methods.addcertificates(arr1, arr2).send(
         {
             from: accounts[0],
             gas: '4700000'
@@ -318,8 +322,9 @@ var addcertificate = async (arr1, arr2) => {
     )
 }
 
+// get personal ipfshash mapped to owner's address 
 var get_personal_ipfs = async(arr1,arr2) => {
-    var ipfs = await contract.methods.get_personal_ipfs().call(
+    var ipfs = await contract.methods.get_personal_ipfs_hash().call(
         {
             from:accounts[0],
             gas: '4700000'
@@ -328,8 +333,9 @@ var get_personal_ipfs = async(arr1,arr2) => {
     return ipfs;
 }
 
+// update personal ipfshash mapped to owner's address
 var update_personal_ipfs = async(ipfs_hash) => {
-    await contract.methdods.update_personal_ipfs(ipfs_hash).send(
+    await contract.methdods.update(ipfs_hash).send(
         {
             from:accounts[0],
             gas: '4700000'
@@ -342,10 +348,20 @@ var get_certificate = async(unique_id) => {
     var serial_id = unique_id.split("-")[1];
     var contract_address = await get_contract_address(series_name);
     new_contract(contract_address);
-    var ipfs_hash1 = '' ; //get intermediate ipfs 
-    var ipfs_hash2 = '' ; //get intermediate ipfs 
+    var ipfs_hash1 = newcontract.methdods.getcertificate(serial_id).call(
+        {
+            from: accounts[0],
+            gas: '4700000'
+        }
+    ); //get intermediate ipfs 1 
+    var ipfs_hash2 = newcontract.methdods.getcertificate2(serial_id).call(
+        {
+            from: accounts[0],
+            gas: '4700000'
+        } 
+    ); //get intermediate ipfs 2 
     var ipfs_hash = web3.utils.toAscii(ipfs_hash1)+web3.utils.toAscii(ipfs_hash2);
-    var result = get_json(ipfs_hash);
+    var result = await get_json(ipfs_hash);
     if(result.pubpriv == 0)
         return result;
     else
