@@ -270,7 +270,51 @@ var claim_certificate = async(unique_id) => {
     var serial_id = unique_id.split("-")[1];
     var contract_address = await get_contract_address(series_name);
     new_contract(contract_address);
-    checkOwner
+    Owner = "";// cheetah methods; 
+    if(accounts[0] == Owner){
+        ipfs = get_personal_ipfs(accounts[0]);
+        if(ipfs.startsWith("Qm"))
+        {
+            var list = get_json(ipfs);
+            list.push(ipfs);
+            var new_personal = upload_intermediate(list);
+            update_personal_ipfs(new_personal);
+        }
+        else
+        {
+            var list = []
+            list.push([ipfs,contract_address,serial_id]);
+            var new_personal = upload_intermediate(list);
+            update_personal_ipfs(new_personal);
+        }
+    }
+    else
+    {
+        return "You are not the owner of the certificate"
+    }
 }
 
+var change_access = (index,val) => {
+    var personal_ipfs = get_personal_ipfs(accounts[0]);
+    var current = get_json(personal_ipfs);
+    var result = get_json(current[index][0]);
+    result.pubpriv = val;
+    var ipfs_hash = upload_intermediate(result);
+    current[index][0] = ipfs_hash;
+    var personal_ipfs = upload_intermediate(current);
+    new_contract(current[index][1]);
+    update_ipfs()//cheetah
+}
+
+var add_access = (index,val) => {
+    var personal_ipfs = get_personal_ipfs(accounts[0]);
+    var current = get_json(personal_ipfs);
+    var result = get_json(current[index][0]);
+    result.access.push(val);
+    var ipfs_hash = upload_intermediate(result);
+    current[index][0] = ipfs_hash;
+    var personal_ipfs = upload_intermediate(current);
+    new_contract(current[index][1]);
+    update_ipfs()//cheetah
+}
 
