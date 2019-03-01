@@ -6,14 +6,14 @@ const ipfs = ipfsAPI({host: 'localhost', port: '5001', protocol: 'http'})
 // uploading a doc to ipfs return hash
 const upload_doc = async (filepath)=>{ 
     //Reading file from computer
-    let testFile = fs.readFile(filepath);
+    //let testFile = fs.readFile(filepath);
     //Creating buffer for ipfs function to add file to the system
-    let testBuffer = new Buffer(testFile);
+    //let testBuffer = new Buffer(testFile);
 
     //Addfile router for adding file a local file to the IPFS network without any local node
     //app.get('/addfile', function(req, res) {
 
-    ipfs.add(testBuffer, function (err, hash) {
+    ipfs.add(filepath, function (err, hash) {
     if (err) {
         console.log(err);
     }
