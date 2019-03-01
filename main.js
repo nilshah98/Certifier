@@ -84,76 +84,54 @@ window.onload = async () => {
         }
     ];
     
-    var address = '0x8ed06c435832d52a7e0e39f7f24640c3a7d12ee2';
+    var address = '0xaa476736bfa943476321440b2f7ad3583256f88f';
     accounts = await web3.eth.getAccounts();
     contract = new web3.eth.Contract(abi,address);
     console.log(contract);
 
     abi2 = [
         {
-            "constant": false,
+            "constant": true,
             "inputs": [
                 {
-                    "name": "_id_to_ipfshash",
-                    "type": "bytes32[]"
-                },
-                {
-                    "name": "_id_to_address",
-                    "type": "address[]"
+                    "name": "",
+                    "type": "uint256"
                 }
             ],
-            "name": "addcertificates",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
+            "name": "id_to_address",
+            "outputs": [
                 {
-                    "name": "_series_name",
-                    "type": "uint256"
-                },
-                {
-                    "name": "_issuer",
+                    "name": "",
                     "type": "address"
                 }
             ],
             "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "constructor"
+            "stateMutability": "view",
+            "type": "function"
         },
         {
-            "constant": false,
-            "inputs": [
+            "constant": true,
+            "inputs": [],
+            "name": "issuer",
+            "outputs": [
                 {
-                    "name": "_serial_id",
-                    "type": "uint256"
-                },
-                {
-                    "name": "_ipfs_hash",
-                    "type": "bytes32"
-                },
-                {
-                    "name": "_ipfs_hash_2",
-                    "type": "bytes32"
+                    "name": "",
+                    "type": "address"
                 }
             ],
-            "name": "update_ipfs_hash",
-            "outputs": [],
             "payable": false,
-            "stateMutability": "nonpayable",
+            "stateMutability": "view",
             "type": "function"
         },
         {
             "constant": true,
             "inputs": [
                 {
-                    "name": "_serial_id",
+                    "name": "",
                     "type": "uint256"
                 }
             ],
-            "name": "getcertificate",
+            "name": "id_to_ipfshash",
             "outputs": [
                 {
                     "name": "",
@@ -187,30 +165,11 @@ window.onload = async () => {
             "constant": true,
             "inputs": [
                 {
-                    "name": "",
+                    "name": "_serial_id",
                     "type": "uint256"
                 }
             ],
-            "name": "id_to_address",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "name": "id_to_ipfshash",
+            "name": "getcertificate",
             "outputs": [
                 {
                     "name": "",
@@ -223,8 +182,13 @@ window.onload = async () => {
         },
         {
             "constant": true,
-            "inputs": [],
-            "name": "issuer",
+            "inputs": [
+                {
+                    "name": "_serial_id",
+                    "type": "uint256"
+                }
+            ],
+            "name": "get_address",
             "outputs": [
                 {
                     "name": "",
@@ -233,6 +197,24 @@ window.onload = async () => {
             ],
             "payable": false,
             "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_id_to_ipfshash",
+                    "type": "bytes32[]"
+                },
+                {
+                    "name": "_id_to_address",
+                    "type": "address[]"
+                }
+            ],
+            "name": "addcertificates",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
             "type": "function"
         },
         {
@@ -250,6 +232,28 @@ window.onload = async () => {
             "type": "function"
         },
         {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_serial_id",
+                    "type": "uint256"
+                },
+                {
+                    "name": "_ipfs_hash",
+                    "type": "bytes32"
+                },
+                {
+                    "name": "_ipfs_hash_2",
+                    "type": "bytes32"
+                }
+            ],
+            "name": "update_ipfs_hash",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
             "constant": true,
             "inputs": [],
             "name": "series_name",
@@ -262,6 +266,21 @@ window.onload = async () => {
             "payable": false,
             "stateMutability": "view",
             "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "name": "_series_name",
+                    "type": "uint256"
+                },
+                {
+                    "name": "_issuer",
+                    "type": "address"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "constructor"
         }
     ];
 }
@@ -343,24 +362,13 @@ var update_personal_ipfs = async(ipfs_hash) => {
     )
 }
 
+// get certificate from "seriesname-serialid"
 var get_certificate = async(unique_id) => {
     var series_name = unique_id.split("-")[0];
     var serial_id = unique_id.split("-")[1];
     var contract_address = await get_contract_address(series_name);
     new_contract(contract_address);
-    var ipfs_hash1 = newcontract.methdods.getcertificate(serial_id).call(
-        {
-            from: accounts[0],
-            gas: '4700000'
-        }
-    ); //get intermediate ipfs 1 
-    var ipfs_hash2 = newcontract.methdods.getcertificate2(serial_id).call(
-        {
-            from: accounts[0],
-            gas: '4700000'
-        } 
-    ); //get intermediate ipfs 2 
-    var ipfs_hash = web3.utils.toAscii(ipfs_hash1)+web3.utils.toAscii(ipfs_hash2);
+    var ipfs_hash = await id_to_hash(serial_id);
     var result = await get_json(ipfs_hash);
     if(result.pubpriv == 0)
         return result;
@@ -378,25 +386,48 @@ var get_certificate = async(unique_id) => {
     }
 }
 
-var claim_certificate = async(unique_id) => {
+var id_to_hash = async(serial_id) => {
+    var ipfshash1 = await newcontract.methods.getcertificate(serial_id).call(
+        {
+            from: accounts[0],
+            gas: '4700000'
+        }
+    );
+    var ipfshash2 = await newcontract.methods.getcertificate2(serial_id).call(
+        {
+            from: accounts[0],
+            gas: '4700000'
+        }
+    );
+    return web3.utils.toAscii(ipfshash1) + web3.utils.toAscii(ipfshash2);
+};
+
+var add_certificate_to_dashboard = async(unique_id) => {
     var series_name = unique_id.split("-")[0];
     var serial_id = unique_id.split("-")[1];
     var contract_address = await get_contract_address(series_name);
     new_contract(contract_address);
-    Owner = "";// cheetah methods; 
+    var Owner = newcontract.methods.get_address().call(
+        {
+            from: accounts[0],
+            gas: '4700000'
+        }
+    ); 
     if(accounts[0] == Owner){
         ipfs = get_personal_ipfs(accounts[0]);
         if(ipfs.startsWith("Qm"))
         {
             var list = get_json(ipfs);
-            list.push(ipfs);
+            var ipfshash = await id_to_hash(serial_id);
+            list.push(ipfshash);
             var new_personal = upload_intermediate(list);
             update_personal_ipfs(new_personal);
         }
         else
         {
-            var list = []
-            list.push([ipfs,contract_address,serial_id]);
+            var list = [];
+            var ipfs_hash = await id_to_hash(serial_id);
+            list.push([ipfshash,contract_address,serial_id]);
             var new_personal = upload_intermediate(list);
             update_personal_ipfs(new_personal);
         }
@@ -405,6 +436,15 @@ var claim_certificate = async(unique_id) => {
     {
         return "You are not the owner of the certificate"
     }
+}
+
+var update_ipfs_hash = async(serial_id, ipfshash1, ipfshash2) => {
+    newcontract.methods.update_ipfs_hash(serial_id,ipfshash1,ipfshash2).send(
+        {
+            from: accounts[0],
+            gas: '4700000'
+        }
+    )
 }
 
 var change_access = (index,val) => {
@@ -416,7 +456,9 @@ var change_access = (index,val) => {
     current[index][0] = ipfs_hash;
     var personal_ipfs = upload_intermediate(current);
     new_contract(current[index][1]);
-    update_ipfs()//cheetah
+    var hash1 = web3.utils.fromAscii(ipfs_hash.slice(0,32));
+    var hash1 = web3.utils.fromAscii(ipfs_hash.slice(32));
+    await update_ipfs_hash(current[index][2], hash1, hash2);
 }
 
 var add_access = (index,val) => {
@@ -428,6 +470,8 @@ var add_access = (index,val) => {
     current[index][0] = ipfs_hash;
     var personal_ipfs = upload_intermediate(current);
     new_contract(current[index][1]);
-    update_ipfs()//cheetah
+    var hash1 = web3.utils.fromAscii(ipfs_hash.slice(0,32));
+    var hash1 = web3.utils.fromAscii(ipfs_hash.slice(32));
+    await update_ipfs_hash(current[index][2], hash1, hash2);
 }
 
