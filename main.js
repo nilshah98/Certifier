@@ -15,6 +15,25 @@ window.onload = async () => {
         {
             "constant": false,
             "inputs": [],
+            "name": "get_series_name",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_series_name",
+                    "type": "uint256"
+                }
+            ],
             "name": "issue",
             "outputs": [],
             "payable": false,
@@ -67,24 +86,10 @@ window.onload = async () => {
             "payable": false,
             "stateMutability": "view",
             "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "series_name",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
         }
     ];
     
-    var address = '0xaa476736bfa943476321440b2f7ad3583256f88f';
+    var address = '0x1b74e975e35ba476e91e1eaf9b885e4090ee98eb';
     accounts = await web3.eth.getAccounts();
     contract = new web3.eth.Contract(abi,address);
     console.log(contract);
@@ -291,8 +296,8 @@ var new_contract = (series_address) => {
 }
 
 // Add group of certificates i.e a series of certificates.
-var addcontract = async (arr1, arr2) => {
-    await contract.methods.issue().send(
+var addcontract = async (arr1, arr2, series_name) => {
+    await contract.methods.issue(series_name).send(
         {
             from: accounts[0],
             gas: '4700000'

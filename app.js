@@ -36,7 +36,7 @@ const upload_intermediate = async (intermediate)=>{
     });
 }
 
-var issue = async (files,owners,description) => {
+var issue = async (files,owners,description,series_name) => {
     hashes = []
     console.log("called");
     for(var i=0;i<files.length;i++)
@@ -57,7 +57,7 @@ var issue = async (files,owners,description) => {
         hashes.push[hash1];
         hashes.push[hash2];
     }
-    await addcontact(hashes,owners);
+    await addcontact(hashes,owners,series_name);
 }
 
 //issue(['nurdtechie98.png','test.png'],["0x9ef08d23bd291c2f2c27654ba02d05a1386cc185","0x9ef08d23bd291c2f2c27654ba02d05a1386cc185"],["shivam cheetah","neel hero"]);
