@@ -14,13 +14,22 @@ window.onload = async () => {
     var abi = [
         {
             "constant": false,
+            "inputs": [],
+            "name": "issue",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
             "inputs": [
                 {
-                    "name": "_series_name",
+                    "name": "_ipfs_hash",
                     "type": "string"
                 }
             ],
-            "name": "issue",
+            "name": "update",
             "outputs": [],
             "payable": false,
             "stateMutability": "nonpayable",
@@ -31,7 +40,7 @@ window.onload = async () => {
             "inputs": [
                 {
                     "name": "_series_name",
-                    "type": "string"
+                    "type": "uint256"
                 }
             ],
             "name": "get_contract_address",
@@ -39,6 +48,34 @@ window.onload = async () => {
                 {
                     "name": "",
                     "type": "address"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "get_personal_ipfs_hash",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "string"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "series_name",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
                 }
             ],
             "payable": false,
@@ -54,18 +91,73 @@ window.onload = async () => {
 
     abi2 = [
         {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_id_to_ipfshash",
+                    "type": "bytes32[]"
+                },
+                {
+                    "name": "_id_to_address",
+                    "type": "address[]"
+                }
+            ],
+            "name": "addcertificates",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "name": "_series_name",
+                    "type": "uint256"
+                },
+                {
+                    "name": "_issuer",
+                    "type": "address"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "constructor"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_serial_id",
+                    "type": "uint256"
+                },
+                {
+                    "name": "_ipfs_hash",
+                    "type": "bytes32"
+                },
+                {
+                    "name": "_ipfs_hash_2",
+                    "type": "bytes32"
+                }
+            ],
+            "name": "update_ipfs_hash",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
             "constant": true,
             "inputs": [
                 {
-                    "name": "",
+                    "name": "_serial_id",
                     "type": "uint256"
                 }
             ],
-            "name": "id_to_address",
+            "name": "getcertificate",
             "outputs": [
                 {
                     "name": "",
-                    "type": "address"
+                    "type": "bytes32"
                 }
             ],
             "payable": false,
@@ -74,8 +166,32 @@ window.onload = async () => {
         },
         {
             "constant": true,
-            "inputs": [],
-            "name": "issuer",
+            "inputs": [
+                {
+                    "name": "_serial_id",
+                    "type": "uint256"
+                }
+            ],
+            "name": "getcertificate2",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "bytes32"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "name": "id_to_address",
             "outputs": [
                 {
                     "name": "",
@@ -108,6 +224,20 @@ window.onload = async () => {
         {
             "constant": true,
             "inputs": [],
+            "name": "issuer",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
             "name": "serial_id",
             "outputs": [
                 {
@@ -120,51 +250,18 @@ window.onload = async () => {
             "type": "function"
         },
         {
-            "constant": false,
-            "inputs": [
-                {
-                    "name": "_id_to_ipfshash",
-                    "type": "bytes32[]"
-                },
-                {
-                    "name": "_id_to_address",
-                    "type": "address[]"
-                }
-            ],
-            "name": "addcertificate",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
             "constant": true,
             "inputs": [],
             "name": "series_name",
             "outputs": [
                 {
                     "name": "",
-                    "type": "string"
+                    "type": "uint256"
                 }
             ],
             "payable": false,
             "stateMutability": "view",
             "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "name": "_series_name",
-                    "type": "string"
-                },
-                {
-                    "name": "_issuer",
-                    "type": "address"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "constructor"
         }
     ];
 }
