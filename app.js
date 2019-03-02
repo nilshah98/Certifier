@@ -3,7 +3,7 @@ const ipfsAPI = require('ipfs-http-client');
 const ipfs = ipfsAPI({host: 'localhost', port: '5001', protocol: 'http'})
 
 // uploading a doc to ipfs return hash
-const upload_doc = async (filepath)=>{ 
+window.upload_doc = async (filepath)=>{ 
     //Reading file from computer
     //let testFile = fs.readFile(filepath);
     //Creating buffer for ipfs function to add file to the system
@@ -20,7 +20,7 @@ const upload_doc = async (filepath)=>{
     });
 }
 
-const upload_intermediate = async (intermediate)=>{ 
+window.upload_intermediate = async (intermediate)=>{ 
     //Creating buffer for ipfs function to add file to the system
     let testBuffer = new Buffer(JSON.stringify(intermediate));
 
@@ -35,7 +35,7 @@ const upload_intermediate = async (intermediate)=>{
     });
 }
 
-var issue = async (files,owners,description,series_name) => {
+window.issue = async (files,owners,description,series_name) => {
     hashes = []
     console.log("called");
     for(var i=0;i<files.length;i++)
@@ -60,4 +60,3 @@ var issue = async (files,owners,description,series_name) => {
 }
 
 //issue(['nurdtechie98.png','test.png'],["0x9ef08d23bd291c2f2c27654ba02d05a1386cc185","0x9ef08d23bd291c2f2c27654ba02d05a1386cc185"],["shivam cheetah","neel hero"]);
-

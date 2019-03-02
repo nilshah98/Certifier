@@ -1,5 +1,5 @@
 // IPFS
-
+window.Buffer = require('buffer/').Buffer 
 const ipfsAPI = require('ipfs-http-client');
 //Connceting to the ipfs network via infura gateway
 const ipfs = ipfsAPI({host: 'localhost', port: '5001', protocol: 'http'})
@@ -29,13 +29,8 @@ const upload_doc = async (filepath)=>{
 
     //Addfile router for adding file a local file to the IPFS network without any local node
     //app.get('/addfile', function(req, res) {
-
-    ipfs.add(filepath, function (err, hash) {
-    if (err) {
-        console.log(err);
-    }
-    return hash;
-    });
+    hash = await ipfs.add(filepath);
+    return hash[0].hash;
 }
 
 const upload_intermediate = async (intermediate)=>{ 
@@ -45,17 +40,13 @@ const upload_intermediate = async (intermediate)=>{
     //Addfile router for adding file a local file to the IPFS network without any local node
     //app.get('/addfile', function(req, res) {
 
-    ipfs.add(testBuffer, function (err, file) {
-    if (err) {
-        console.log(err);
-    }
-    console.log(file)
-    });
+    hash = await ipfs.add(testBuffer);
+    return hash[0].hash;
 }
 
-var issue = async (files,owners,description,series_name) => {
-    hashes = []
-    console.log("called");
+window.issue = async (files,owners,description,series_name) => {
+    var hashes = []
+    //console.log("called");
     for(var i=0;i<files.length;i++)
     {
         var file_hash = await upload_doc(files[i]);
@@ -69,12 +60,13 @@ var issue = async (files,owners,description,series_name) => {
             access:[]
         }
         var intermediate_hash = await upload_intermediate(intermediate);
+        //console.log("************"+intermediate_hash);
         var hash1 = web3.utils.fromAscii(intermediate_hash.slice(0,32));
         var hash2 = web3.utils.fromAscii(intermediate_hash.slice(32));
-        hashes.push[hash1];
-        hashes.push[hash2];
+        hashes.push(hash1);
+        hashes.push(hash2);
     }
-    await addcontact(hashes,owners,series_name);
+    await addcontract(hashes,owners,series_name);
 }
 
 //issue(['nurdtechie98.png','test.png'],["0x9ef08d23bd291c2f2c27654ba02d05a1386cc185","0x9ef08d23bd291c2f2c27654ba02d05a1386cc185"],["shivam cheetah","neel hero"]);
@@ -383,20 +375,15 @@ var new_contract = (series_address) => {
 
 // Add group of certificates i.e a series of certificates.
 var addcontract = async (arr1, arr2, series_name) => {
+    //console.log("&&&&&&&&&&&&&"+arr1);
     await contract.methods.issue(series_name).send(
         {
             from: accounts[0],
             gas: '4700000'
         }
     )
-    var series_name = await contract.methdods.series_name().call(
-        {
-            from: accounts[0],
-            gas: '4700000'
-        }
-    )
     var series_address = await get_contract_address(series_name);
-    console.log(series_address);
+    console.log("++++++++++++++"+series_address);
     //  5 entries in CSV
     // for(var i=0;i<5;i++){
     //     generate ipfshash
@@ -542,7 +529,7 @@ var update_ipfs_hash = async(serial_id, ipfshash1, ipfshash2) => {
     )
 }
 
-var change_access = (index,val) => {
+var change_access = async(index,val) => {
     var personal_ipfs = get_personal_ipfs(accounts[0]);
     var current = get_json(personal_ipfs);
     var result = get_json(current[index][0]);
@@ -556,7 +543,7 @@ var change_access = (index,val) => {
     await update_ipfs_hash(current[index][2], hash1, hash2);
 }
 
-var add_access = (index,val) => {
+var add_access = async(index,val) => {
     var personal_ipfs = get_personal_ipfs(accounts[0]);
     var current = get_json(personal_ipfs);
     var result = get_json(current[index][0]);

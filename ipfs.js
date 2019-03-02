@@ -11,17 +11,19 @@ const upload_doc = (filepath)=>{
     let testFile = fs.readFileSync(filepath);
     //Creating buffer for ipfs function to add file to the system
     let testBuffer = new Buffer(testFile);
-
+    console.log(testBuffer);
     //Addfile router for adding file a local file to the IPFS network without any local node
     //app.get('/addfile', function(req, res) {
 
-    ipfs.add(testBuffer, function (err, file) {
-    if (err) {
-        console.log(err);
-    }
-    console.log(file)
-    });
+    // ipfs.add(testBuffer, function (err, file) {
+    // if (err) {
+    //     console.log(err);
+    // }
+    // console.log(file)
+    // });
 }
+
+upload_doc("./imgonline-com-ua-shape-BOKNIQxfvX.png")
 
 const upload_intermediate = (intermediate)=>{ 
     //Creating buffer for ipfs function to add file to the system
@@ -60,7 +62,7 @@ const get_json = (validCID)=>{
     })
 }
 
-get_json("Qmb6eEURAKZaTKqqhkAgUdHwCUa7QtxGxk6Yc9PTtu8zqx");
+//get_json("Qmb6eEURAKZaTKqqhkAgUdHwCUa7QtxGxk6Yc9PTtu8zqx");
 
 
 const update_access = (validCID)
