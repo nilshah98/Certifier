@@ -373,6 +373,16 @@ var new_contract = (series_address) => {
     newcontract = new web3.eth.Contract(abi2,series_address);
 }
 
+var get_series_name = async() => {
+    var series_name = await contract.methods.get_series_name().call(
+        {
+            from: accounts[0],
+            gas: '4700000'
+        }
+    )
+    return series_name;
+}
+
 // Add group of certificates i.e a series of certificates.
 var addcontract = async (arr1, arr2, series_name) => {
     //console.log("&&&&&&&&&&&&&"+arr1);
