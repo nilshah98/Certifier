@@ -13,11 +13,11 @@ const getFile = (validCID)=>{
     })
 }
 
-const get_json = (validCID)=>{
-    ipfs.cat(validCID, function (err, file) {
-            const json_obj = JSON.parse(file);
-            return json_obj;
-    })
+const get_json = async(validCID)=>{
+    //console.log("+++++++++",validCID);
+    var file = await ipfs.cat(validCID);
+    //console.log("%%%%%%%%",file);
+    return JSON.parse(file);
 }
 
 // uploading a doc to ipfs return hash
@@ -57,7 +57,7 @@ window.issue = async (files,owners,description,series_name) => {
             description:description[i],//description separate for each maybe
             created:d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getFullYear()+"-"+d.toLocaleTimeString(),
             pubpriv:0,
-            access:[]
+            access:[owners[(2*i)]]
         }
         var intermediate_hash = await upload_intermediate(intermediate);
         //console.log("************"+intermediate_hash);
@@ -383,7 +383,7 @@ var addcontract = async (arr1, arr2, series_name) => {
         }
     )
     var series_address = await get_contract_address(series_name);
-    console.log("++++++++++++++"+series_address);
+    //console.log("++++++++++++++"+series_address);
     //  5 entries in CSV
     // for(var i=0;i<5;i++){
     //     generate ipfshash
@@ -420,19 +420,19 @@ var addcertificates = async (arr1, arr2) => {
 }
 
 // get personal ipfshash mapped to owner's address 
-var get_personal_ipfs = async(arr1,arr2) => {
-    var ipfs = await contract.methods.get_personal_ipfs_hash().call(
+var get_personal_ipfs = async() => {
+    var ipfs_hash = await contract.methods.get_personal_ipfs_hash().call(
         {
             from:accounts[0],
             gas: '4700000'
         }
     )
-    return ipfs;
+    return ipfs_hash;
 }
 
 // update personal ipfshash mapped to owner's address
 var update_personal_ipfs = async(ipfs_hash) => {
-    await contract.methdods.update(ipfs_hash).send(
+    await contract.methods.update(ipfs_hash).send(
         {
             from:accounts[0],
             gas: '4700000'
@@ -441,19 +441,22 @@ var update_personal_ipfs = async(ipfs_hash) => {
 }
 
 // get certificate from "seriesname-serialid"
-var get_certificate = async(unique_id) => {
+window.get_certificate = async(unique_id) => {
     var series_name = unique_id.split("-")[0];
     var serial_id = unique_id.split("-")[1];
     var contract_address = await get_contract_address(series_name);
     new_contract(contract_address);
     var ipfs_hash = await id_to_hash(serial_id);
+    console.log(ipfs_hash);
     var result = await get_json(ipfs_hash);
+    console.log(result);
     if(result.pubpriv == 0)
         return result;
     else
     {
-        accessible = results.access;
-        if(accessible.include(accounts[0]))
+        accessible = result.access;
+        console.log(accessible);
+        if(accessible.includes(accounts[0]))
         {
             return result;
         }
@@ -477,42 +480,51 @@ var id_to_hash = async(serial_id) => {
             gas: '4700000'
         }
     );
-    ipfshash1.replace("\00\g","");
-    ipfshash2.replace("\00\g","");
+    ipfshash1 = ipfshash1.replace(/00/g,"");
+    ipfshash2 = ipfshash2.replace(/00/g,"");
     ipfshash1 = web3.utils.toAscii(ipfshash1);
     ipfshash2 = web3.utils.toAscii(ipfshash2);
     return ipfshash1 + ipfshash2;
 };
 
-var add_certificate_to_dashboard = async(unique_id) => {
+window.add_certificate_to_dashboard = async(unique_id) => {
     var series_name = unique_id.split("-")[0];
     var serial_id = unique_id.split("-")[1];
     var contract_address = await get_contract_address(series_name);
     new_contract(contract_address);
-    var Owner = newcontract.methods.get_address().call(
+    var Owner = await newcontract.methods.get_address(serial_id).call(
         {
             from: accounts[0],
             gas: '4700000'
         }
     ); 
     if(accounts[0] == Owner){
-        ipfs = get_personal_ipfs(accounts[0]);
-        if(ipfs.startsWith("Qm"))
+        var ipfs_hash = await get_personal_ipfs(accounts[0]);
+        var issuer_name = await newcontract.methods.issuer().call(
+            {
+                from: accounts[0],
+                gas: '4700000'
+            }
+        );
+        console.log("))))"+ipfs_hash);
+        if(ipfs_hash.startsWith("Qm"))
         {
-            var list = get_json(ipfs);
+            var list = await get_json(ipfs_hash);
             var ipfshash = await id_to_hash(serial_id);
-            list.push(ipfshash);
-            var new_personal = upload_intermediate(list);
-            update_personal_ipfs(new_personal);
+            list.push([ipfshash,contract_address,serial_id,issuer_name]);
+            var new_personal = await upload_intermediate(list);
+            await update_personal_ipfs(new_personal);
         }
         else
         {
             var list = [];
             var ipfs_hash = await id_to_hash(serial_id);
-            list.push([ipfshash,contract_address,serial_id]);
-            var new_personal = upload_intermediate(list);
-            update_personal_ipfs(new_personal);
+            list.push([ipfs_hash,contract_address,serial_id,issuer_name]);
+            list = JSON.stringify(list);
+            var new_personal = await upload_intermediate(list);
+            await update_personal_ipfs(new_personal);
         }
+        return list
     }
     else
     {
@@ -529,31 +541,54 @@ var update_ipfs_hash = async(serial_id, ipfshash1, ipfshash2) => {
     )
 }
 
-var change_access = async(index,val) => {
-    var personal_ipfs = get_personal_ipfs(accounts[0]);
-    var current = get_json(personal_ipfs);
-    var result = get_json(current[index][0]);
+window.change_access = async(index,val) => {
+    var personal_ipfs = await get_personal_ipfs(accounts[0]);
+    console.log(personal_ipfs);
+    var current = await get_json(personal_ipfs);
+    var result = await get_json(current[index][0]);
     result.pubpriv = val;
-    var ipfs_hash = upload_intermediate(result);
+    console.log(result);
+    var ipfs_hash = await upload_intermediate(result);
     current[index][0] = ipfs_hash;
-    var personal_ipfs = upload_intermediate(current);
+    var personal_ipfs = await upload_intermediate(current);
+    console.log(personal_ipfs);
     new_contract(current[index][1]);
     var hash1 = web3.utils.fromAscii(ipfs_hash.slice(0,32));
     var hash2 = web3.utils.fromAscii(ipfs_hash.slice(32));
     await update_ipfs_hash(current[index][2], hash1, hash2);
+    await update_personal_ipfs(personal_ipfs);
 }
 
-var add_access = async(index,val) => {
-    var personal_ipfs = get_personal_ipfs(accounts[0]);
-    var current = get_json(personal_ipfs);
-    var result = get_json(current[index][0]);
+window.add_access = async(index,val) => {
+    var personal_ipfs = await get_personal_ipfs(accounts[0]);
+    var current = await get_json(personal_ipfs);
+
+    var result = await get_json(current[index][0]);
     result.access.push(val);
-    var ipfs_hash = upload_intermediate(result);
+    console.log(result);
+    var ipfs_hash = await upload_intermediate(result);
+    console.log("$%$%$%$%",ipfs_hash);
     current[index][0] = ipfs_hash;
-    var personal_ipfs = upload_intermediate(current);
+    var personal_ipfs = await upload_intermediate(current);
+    console.log("{}{}}{}{}{}",personal_ipfs);
     new_contract(current[index][1]);
     var hash1 = web3.utils.fromAscii(ipfs_hash.slice(0,32));
     var hash2 = web3.utils.fromAscii(ipfs_hash.slice(32));
     await update_ipfs_hash(current[index][2], hash1, hash2);
+    await update_personal_ipfs(personal_ipfs);
+}
+
+window.get_dashboard = async() => {
+    var personal_ipfs = await get_personal_ipfs(accounts[0]);
+    var current = await get_json(personal_ipfs);
+    list = []
+    for(var i=0;i<current.length;i++)
+    {
+        var certi = current[i];
+        var certificate = await get_json(certi[0]);
+        certificate["issuer"] = certi[3];
+        list.push(certificate); 
+    }
+    return list;
 }
 
