@@ -510,7 +510,7 @@ window.add_certificate_to_dashboard = async(unique_id) => {
         if(ipfs_hash.startsWith("Qm"))
         {
             var list = await get_json(ipfs_hash);
-            var ipfshash = await id_to_hash(serial_id);
+            var ipfshash = await id_to_hash(serial_id);  //intermediate ipfs hash with all details
             list.push([ipfshash,contract_address,serial_id,issuer_name]);
             var new_personal = await upload_intermediate(list);
             await update_personal_ipfs(new_personal);
@@ -524,7 +524,7 @@ window.add_certificate_to_dashboard = async(unique_id) => {
             var new_personal = await upload_intermediate(list);
             await update_personal_ipfs(new_personal);
         }
-        return list
+        return list;
     }
     else
     {
@@ -545,7 +545,7 @@ window.change_access = async(index,val) => {
     var personal_ipfs = await get_personal_ipfs(accounts[0]);
     console.log(personal_ipfs);
     var current = await get_json(personal_ipfs);
-    var result = await get_json(current[index][0]);
+    var result = await get_json(current[index][0]);  //current[index][0] is intermediate hash with all details.
     result.pubpriv = val;
     console.log(result);
     var ipfs_hash = await upload_intermediate(result);
