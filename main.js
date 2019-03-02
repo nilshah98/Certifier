@@ -4,6 +4,22 @@ const ipfsAPI = require('ipfs-http-client');
 //Connceting to the ipfs network via infura gateway
 const ipfs = ipfsAPI({host: 'localhost', port: '5001', protocol: 'http'})
 
+const getFile = (validCID)=>{
+    ipfs.get(validCID, function (err, files) {
+        files.forEach((file) => {
+            //console.log(file.path)
+            console.log(file.content.toString('utf8'))
+        })
+    })
+}
+
+const get_json = (validCID)=>{
+    ipfs.cat(validCID, function (err, file) {
+            const json_obj = JSON.parse(file);
+            return json_obj;
+    })
+}
+
 // uploading a doc to ipfs return hash
 const upload_doc = async (filepath)=>{ 
     //Reading file from computer
