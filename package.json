@@ -18,8 +18,10 @@
   "homepage": "https://github.com/nurdtechie98/Certifier#readme",
   "dependencies": {
     "bip39": "^2.5.0",
+    "buffer": "^5.2.1",
     "eccrypto": "^1.1.0",
     "ejs": "^2.6.1",
+    "ipfs-http-client": "^29.1.1",
     "nodemailer": "^5.1.1"
   }
 }

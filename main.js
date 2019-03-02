@@ -93,13 +93,8 @@ window.onload = async () => {
         {
             "constant": false,
             "inputs": [],
-            "name": "get_series_name",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
+            "name": "increment_series_name",
+            "outputs": [],
             "payable": false,
             "stateMutability": "nonpayable",
             "type": "function"
@@ -164,10 +159,24 @@ window.onload = async () => {
             "payable": false,
             "stateMutability": "view",
             "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "get_series_name",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
         }
     ];
     
-    var address = '0x1bfa46712cd98644ed956c7e2b8e8fbe6bc091fc';
+    var address = '0x8cb5d421d3edd12a818f7f08f1f2534c9de466f3';
     accounts = await web3.eth.getAccounts();
     contract = new web3.eth.Contract(abi,address);
     console.log(contract);
@@ -373,7 +382,7 @@ var new_contract = (series_address) => {
     newcontract = new web3.eth.Contract(abi2,series_address);
 }
 
-var get_series_name = async() => {
+window.get_series_name = async() => {
     var series_name = await contract.methods.get_series_name().call(
         {
             from: accounts[0],
@@ -381,6 +390,15 @@ var get_series_name = async() => {
         }
     )
     return series_name;
+}
+
+window.increment_series_name = async() => {
+    await contract.methods.increment_series_name().send(
+        {
+            from: accounts[0],
+            gas: '4700000'
+        }
+    )
 }
 
 // Add group of certificates i.e a series of certificates.
@@ -431,7 +449,7 @@ var addcertificates = async (arr1, arr2) => {
 
 // get personal ipfshash mapped to owner's address 
 var get_personal_ipfs = async() => {
-    var ipfs_hash = await contract.methods.get_personal_ipfs_hash().call(
+    var ipfs_hash = await contract.methods.get_personal_ipfs_hash().send(
         {
             from:accounts[0],
             gas: '4700000'
