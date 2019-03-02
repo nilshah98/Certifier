@@ -167,7 +167,7 @@ window.onload = async () => {
         }
     ];
     
-    var address = '0x1b74e975e35ba476e91e1eaf9b885e4090ee98eb';
+    var address = '0x1bfa46712cd98644ed956c7e2b8e8fbe6bc091fc';
     accounts = await web3.eth.getAccounts();
     contract = new web3.eth.Contract(abi,address);
     console.log(contract);
