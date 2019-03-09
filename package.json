@@ -1,27 +1,25 @@
 {
   "name": "certifier",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nurdtechie98/Certifier.git"
-  },
-  "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/nurdtechie98/Certifier/issues"
-  },
-  "homepage": "https://github.com/nurdtechie98/Certifier#readme",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "bip39": "^2.5.0",
-    "buffer": "^5.2.1",
-    "eccrypto": "^1.1.0",
-    "ejs": "^2.6.1",
-    "ipfs-http-client": "^29.1.1",
-    "nodemailer": "^5.1.1"
-  }
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4",
+    "react-scripts": "2.1.8"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
