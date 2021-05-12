@@ -22,6 +22,6 @@
     "eccrypto": "^1.1.0",
     "ejs": "^2.6.1",
     "ipfs-http-client": "^29.1.1",
-    "nodemailer": "^5.1.1"
+    "nodemailer": "^6.4.16"
   }
 }
